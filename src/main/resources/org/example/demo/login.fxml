@@ -4,11 +4,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="435.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.Login">
+<AnchorPane prefHeight="435.0" prefWidth="586.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.demo.LoginController">
    <children>
       <TextField fx:id="tfUser" layoutX="112.0" layoutY="187.0" text="Username" />
       <TextField fx:id="tfPass" layoutX="337.0" layoutY="187.0" text="Password" />
-      <Button fx:id="btnUser" layoutX="210.0" layoutY="260.0" mnemonicParsing="false" onAction="#userLoginAction" text="Button" />
-      <Button fx:id="btnRegister" layoutX="337.0" layoutY="260.0" mnemonicParsing="false" onAction="#userRegisterAction" text="Button" />
+      <Button fx:id="btnUser" layoutX="210.0" layoutY="260.0" mnemonicParsing="false" onAction="#userLoginAction" text="Login" />
+      <Button fx:id="btnRegister" layoutX="337.0" layoutY="260.0" mnemonicParsing="false" onAction="#userRegisterAction" text="Register" />
    </children>
 </AnchorPane>

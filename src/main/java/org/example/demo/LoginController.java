@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.Objects;
 
-public class Login {
+public class LoginController {
 
 //    @FXML
 //    private Button btnRegister;
@@ -49,6 +48,16 @@ public class Login {
         String username = tfUser.getText();
         String password = tfPass.getText();
         if(userLogin(username, password)) {
+
+            Stage stage = (Stage) tfUser.getScene().getWindow();
+            Parent root;
+
+            if("admin".equals(username)) {
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("admin.fxml")));
+            } else {
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user.fxml")));
+            }
+            stage.setScene(new Scene(root,600,400));
             System.out.println("Login Successful");
         } else {
             System.out.println("Login Failed");
