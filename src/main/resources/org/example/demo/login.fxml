@@ -8,7 +8,7 @@
    <children>
       <TextField fx:id="tfUser" layoutX="112.0" layoutY="187.0" text="Username" />
       <TextField fx:id="tfPass" layoutX="337.0" layoutY="187.0" text="Password" />
-      <Button fx:id="btnUser" layoutX="210.0" layoutY="260.0" mnemonicParsing="false" onAction="#userLoginAction" text="Login" />
+      <Button fx:id="btnLogin" layoutX="210.0" layoutY="260.0" mnemonicParsing="false" onAction="#userLoginAction" text="Login" />
       <Button fx:id="btnRegister" layoutX="337.0" layoutY="260.0" mnemonicParsing="false" onAction="#userRegisterAction" text="Register" />
    </children>
 </AnchorPane>

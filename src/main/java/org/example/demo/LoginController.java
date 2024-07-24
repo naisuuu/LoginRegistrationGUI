@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -14,8 +15,8 @@ import java.util.Objects;
 
 public class LoginController {
 
-//    @FXML
-//    private Button btnRegister;
+   @FXML
+    private Button btnRegister;
 //
 //    @FXML
 //    private Button btnUser;
@@ -65,10 +66,9 @@ public class LoginController {
     }
 
     @FXML
-    void userRegisterAction(ActionEvent event) {
-
+    void userRegisterAction(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("register.fxml"));
+        Stage stage = (Stage) btnRegister.getScene().getWindow();
+        stage.setScene(new Scene(root,600,400));
     }
-
-
-
 }
