@@ -15,11 +15,11 @@ import java.util.Objects;
 
 public class Login {
 
-    @FXML
-    private Button btnRegister;
-
-    @FXML
-    private Button btnUser;
+//    @FXML
+//    private Button btnRegister;
+//
+//    @FXML
+//    private Button btnUser;
 
     @FXML
     private TextField tfPass;
@@ -46,18 +46,12 @@ public class Login {
 
     @FXML
     void userLoginAction(ActionEvent event) throws IOException {
-
-        if(userLogin(tfUser.getText(), tfPass.getText())) {
-            Stage stage = (Stage) tfUser.getScene().getWindow();
-            Parent root;
-            if(tfUser.getText().equals("admin")) { //omitted check for pass to save complexity
-                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("src/main/resources/org/example/demo/admin.fxml")));
-            } else{
-                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("src/main/resources/org/example/demo/user.fxml")));
-            }
-            stage.setScene(new Scene(root,600,400));
+        String username = tfUser.getText();
+        String password = tfPass.getText();
+        if(userLogin(username, password)) {
+            System.out.println("Login Successful");
         } else {
-            System.out.println("Login failed");
+            System.out.println("Login Failed");
         }
     }
 
