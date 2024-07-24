@@ -1,8 +1,36 @@
 package org.example.demo;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+
 import java.sql.*;
 
 public class Login {
+
+    @FXML
+    private Button btnRegister;
+
+    @FXML
+    private Button btnUser;
+
+    @FXML
+    private TextField tfPass;
+
+    @FXML
+    private TextField tfUser;
+
+    @FXML
+    void userLoginAction(ActionEvent event) {
+
+    }
+
+    @FXML
+    void userRegisterAction(ActionEvent event) {
+
+    }
+
     public boolean userLogin(String username, String password) {
 
         var url = "jdbc:sqlite:users.db";
@@ -19,4 +47,5 @@ public class Login {
             System.out.println("Login Error");}
         return false;
     }
+
 }
