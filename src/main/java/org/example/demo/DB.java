@@ -20,6 +20,12 @@ try{
             conn = DriverManager.getConnection(url);
             Statement statement = conn.createStatement();
             statement.executeUpdate(createUsersTableString);
+
+            //Hardcoded users
+            statement.executeUpdate("INSERT INTO users (username, password) VALUES ('admin', '4dm1nP455')");
+            statement.executeUpdate("INSERT INTO users (username, password) VALUES ('user', 'u53rP455')");
+            statement.executeUpdate("INSERT INTO users (username, password) VALUES ('superadmin', 'sup3r4dm1nP455')");
+
             System.out.println("Users table created");
 
     } catch (SQLException e) {
