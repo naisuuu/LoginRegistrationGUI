@@ -3,10 +3,7 @@ package org.example.demo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 
 public class DB {
@@ -26,17 +23,29 @@ public class DB {
             logger.info("Connecting to database...");
             Connection conn = DriverManager.getConnection(url);
             Statement statement = conn.createStatement();
+            conn.setAutoCommit(false);
             statement.execute(createUsersTableString);
 
-            //Hardcoded users
-            statement.executeUpdate("INSERT INTO users (username, password) VALUES ('admin', '4dm1nP455')");
-            statement.executeUpdate("INSERT INTO users (username, password) VALUES ('user', 'u53rP455')");
-            statement.executeUpdate("INSERT INTO users (username, password) VALUES ('superadmin', 'sup3r4dm1nP455')");
+            String insertUser = "INSERT INTO users(username, password) VALUES (?, ?)";
 
+            //Hardcoded users
+            try(PreparedStatement preparedStatement = conn.prepareStatement(insertUser)){
+                preparedStatement.setString(1, "admin");
+                preparedStatement.setString(2, "4dm1nP455");
+                preparedStatement.executeUpdate();
+
+                preparedStatement.setString(1, "user");
+                preparedStatement.setString(2, "u53rP455");
+                preparedStatement.executeUpdate();
+
+                preparedStatement.setString(1, "superadmin");
+                preparedStatement.setString(2, "sup3r4dm1nP455");
+                preparedStatement.executeUpdate();
+            }
+           conn.commit();
             logger.info("Connected to Database and Users table created");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException(e);
+            logger.error("Error setting up DB" ,e);
         }
     }
 }

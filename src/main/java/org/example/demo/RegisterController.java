@@ -5,16 +5,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.example.demo.DisplayAlert.showAlert;
 
 public class RegisterController {
 
@@ -40,7 +44,7 @@ public class RegisterController {
     }
 
     @FXML
-    void userRegisterAction(ActionEvent event){
+    void userRegisterAction(ActionEvent event) throws IOException {
         String username = tfUsername.getText();
         String password = tfPass.getText();
 
@@ -50,10 +54,15 @@ public class RegisterController {
         }else {
             logger.info("User" + username +"registration failed");
         }
+        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
+        Stage stage = (Stage) btnReturn.getScene().getWindow();
+        stage.setScene(new Scene(root,600,400));
     }
 
     public void userRegister(String username, String password){
         var url = "jdbc:sqlite:users.db";
+        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+
         String sql = "INSERT INTO users(username,password) VALUES (?,?)";
 
         logger.info("Connecting to Database");
@@ -63,7 +72,7 @@ public class RegisterController {
             logger.info("Connected to database");
 
             ps.setString(1, username);
-            ps.setString(2, password);
+            ps.setString(2, passwordHash);
             ps.executeUpdate();
         }catch(SQLException e){
             logger.error(e);
@@ -79,10 +88,16 @@ public class RegisterController {
         Pattern p = Pattern.compile(regex);
 
         if (password == null) {
-            logger.warn("Registration failed, password is not secure");
+            logger.warn("Registration failed");
             return false;
         }
         Matcher m = p.matcher(password);
+
+        if(!m.matches()){
+            logger.warn("Registration failed");
+            showAlert(Alert.AlertType.ERROR, "Password does not meet minimum security requirements");
+        }
+
         return m.matches();
     }
 

@@ -5,15 +5,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.Objects;
+
+import static org.example.demo.DisplayAlert.showAlert;
 
 public class LoginController {
 
@@ -30,15 +34,17 @@ public class LoginController {
     public boolean userLogin(String username, String password) {
 
         var url = "jdbc:sqlite:users.db";
-        var sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+        var sql = "SELECT * FROM users WHERE username = ?";
 
         try(Connection conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement(sql)){
 
             ps.setString(1, username);
-            ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            if(rs.next()) {
+                String passwordHash = rs.getString("password");
+                return BCrypt.checkpw(password, passwordHash);
+            }
         }catch(SQLException e){
             logger.error(e);
         }
@@ -64,6 +70,7 @@ public class LoginController {
             stage.setScene(new Scene(root,600,400));
             logger.info("Logged in user {}", username);
         } else {
+            showAlert(Alert.AlertType.ERROR,"Login Failed");
             logger.info("Log in failed for user {}", username);
         }
     }

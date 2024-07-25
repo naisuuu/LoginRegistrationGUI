@@ -17,6 +17,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException, SQLException {
 
+        try {
         logger.info("Starting Application");
         DB.setupDB();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("login.fxml"));
@@ -25,10 +26,12 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.show();
         logger.info("Application started");
+        } catch (IOException e) {
+            logger.error("Error during startup",e);
+        }
     }
 
     public static void main(String[] args) {
-
         launch();
     }
 }
