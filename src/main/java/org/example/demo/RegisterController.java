@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
@@ -15,6 +17,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegisterController {
+
+    private static final Logger logger = LogManager.getLogger(RegisterController.class);
     @FXML
     private Button btnRegister;
 
@@ -42,27 +46,28 @@ public class RegisterController {
 
         if(isPasswordSafe(password)){
             userRegister(username,password);
-            System.out.println("User registered");
+            logger.info("User" + username +"registered");
         }else {
-            System.out.println("Register failed" + username + " " + password);
+            logger.info("User" + username +"registration failed");
         }
     }
 
     public void userRegister(String username, String password){
         var url = "jdbc:sqlite:users.db";
         String sql = "INSERT INTO users(username,password) VALUES (?,?)";
-        System.out.println("TEST");
+
+        logger.info("Connecting to Database");
         try(Connection conn = DriverManager.getConnection(url);
             PreparedStatement ps = conn.prepareStatement(sql)){
+
+            logger.info("Connected to database");
 
             ps.setString(1, username);
             ps.setString(2, password);
             ps.executeUpdate();
-            System.out.println("Reached");
         }catch(SQLException e){
-            System.out.println(e.getMessage());
+            logger.error(e);
         }
-        System.out.println("ASDFADSFSADF");
     }
 
     private boolean isPasswordSafe(String password){ //https://www.geeksforgeeks.org/how-to-validate-a-password-using-regular-expressions-in-java/
@@ -74,6 +79,7 @@ public class RegisterController {
         Pattern p = Pattern.compile(regex);
 
         if (password == null) {
+            logger.warn("Registration failed, password is not secure");
             return false;
         }
         Matcher m = p.matcher(password);

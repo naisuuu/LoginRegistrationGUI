@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.*;
@@ -15,12 +17,10 @@ import java.util.Objects;
 
 public class LoginController {
 
+    private static final Logger logger = LogManager.getLogger(LoginController.class);
+
    @FXML
     private Button btnRegister;
-//
-//    @FXML
-//    private Button btnUser;
-
     @FXML
     private TextField tfPass;
 
@@ -40,7 +40,8 @@ public class LoginController {
             ResultSet rs = ps.executeQuery();
             return rs.next();
         }catch(SQLException e){
-            System.out.println("Login Error");}
+            logger.error(e);
+        }
         return false;
     }
 
@@ -48,6 +49,8 @@ public class LoginController {
     void userLoginAction(ActionEvent event) throws IOException {
         String username = tfUser.getText();
         String password = tfPass.getText();
+
+        logger.info("Logging in user {}", username);
         if(userLogin(username, password)) {
 
             Stage stage = (Stage) tfUser.getScene().getWindow();
@@ -59,9 +62,9 @@ public class LoginController {
                 root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user.fxml")));
             }
             stage.setScene(new Scene(root,600,400));
-            System.out.println("Login Successful");
+            logger.info("Logged in user {}", username);
         } else {
-            System.out.println("Login Failed");
+            logger.info("Log in failed for user {}", username);
         }
     }
 

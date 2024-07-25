@@ -1,5 +1,8 @@
 package org.example.demo;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -7,7 +10,11 @@ import java.sql.Statement;
 
 
 public class DB {
+
+    private static final Logger logger = LogManager.getLogger(DB.class);
+
     public static void setupDB() throws SQLException {
+
         String url = "jdbc:sqlite:users.db";
 
         String createUsersTableString = "CREATE TABLE IF NOT EXISTS users (" +
@@ -16,6 +23,7 @@ public class DB {
                 "password varchar(25) NOT NULL)";
 
         try {
+            logger.info("Connecting to database...");
             Connection conn = DriverManager.getConnection(url);
             Statement statement = conn.createStatement();
             statement.execute(createUsersTableString);
@@ -25,8 +33,7 @@ public class DB {
             statement.executeUpdate("INSERT INTO users (username, password) VALUES ('user', 'u53rP455')");
             statement.executeUpdate("INSERT INTO users (username, password) VALUES ('superadmin', 'sup3r4dm1nP455')");
 
-            System.out.println("Users table created");
-
+            logger.info("Connected to Database and Users table created");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new RuntimeException(e);
