@@ -33,14 +33,13 @@ public class LoginController {
         var sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
         try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement ps = conn.prepareStatement(sql)){
+            Statement s = conn.createStatement()){
 
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs = s.executeQuery(sql);
             return rs.next();
         }catch(SQLException e){
-            System.out.println("Login Error");}
+            System.out.println(e);
+        }
         return false;
     }
 

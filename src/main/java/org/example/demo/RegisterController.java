@@ -40,10 +40,10 @@ public class RegisterController {
         String username = tfUsername.getText();
         String password = tfPass.getText();
 
-        if(isPasswordSafe(password)){
+        try{
             userRegister(username,password);
             System.out.println("User registered");
-        }else {
+        }catch(Exception e) {
             System.out.println("Register failed" + username + " " + password);
         }
     }
@@ -53,11 +53,9 @@ public class RegisterController {
         String sql = "INSERT INTO users(username,password) VALUES (?,?)";
         System.out.println("TEST");
         try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement ps = conn.prepareStatement(sql)){
+            Statement s = conn.createStatement()){
 
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ps.executeUpdate();
+            s.executeUpdate(sql);
             System.out.println("Reached");
         }catch(SQLException e){
             System.out.println(e.getMessage());
@@ -65,20 +63,6 @@ public class RegisterController {
         System.out.println("ASDFADSFSADF");
     }
 
-    private boolean isPasswordSafe(String password){ //https://www.geeksforgeeks.org/how-to-validate-a-password-using-regular-expressions-in-java/
-        String regex = "^(?=.*[0-9])"
-                + "(?=.*[a-z])(?=.*[A-Z])"
-                + "(?=.*[@#$%^&+=])"
-                + "(?=\\S+$).{8,20}$";
-
-        Pattern p = Pattern.compile(regex);
-
-        if (password == null) {
-            return false;
-        }
-        Matcher m = p.matcher(password);
-        return m.matches();
-    }
 
 }
 
