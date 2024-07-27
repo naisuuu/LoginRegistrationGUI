@@ -31,25 +31,7 @@ public class LoginController {
     @FXML
     private TextField tfUser;
 
-    public boolean userLogin(String username, String password) {
-
-        var url = "jdbc:sqlite:users.db";
-        var sql = "SELECT * FROM users WHERE username = ?";
-
-        try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement ps = conn.prepareStatement(sql)){
-
-            ps.setString(1, username);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
-                String passwordHash = rs.getString("password");
-                return BCrypt.checkpw(password, passwordHash);
-            }
-        }catch(SQLException e){
-            logger.error(e);
-        }
-        return false;
-    }
+    Login login = new Login();
 
     @FXML
     void userLoginAction(ActionEvent event) throws IOException {
@@ -57,7 +39,7 @@ public class LoginController {
         String password = tfPass.getText();
 
         logger.info("Logging in user {}", username);
-        if(userLogin(username, password)) {
+        if(login.userLogin(username, password)) {
 
             Stage stage = (Stage) tfUser.getScene().getWindow();
             Parent root;

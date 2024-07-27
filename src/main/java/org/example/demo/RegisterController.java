@@ -35,6 +35,8 @@ public class RegisterController {
     @FXML
     private TextField tfUsername;
 
+    Register register = new Register();
+
 
     @FXML
     void btnReturnAction(ActionEvent event) throws IOException {
@@ -48,8 +50,8 @@ public class RegisterController {
         String username = tfUsername.getText();
         String password = tfPass.getText();
 
-        if(isPasswordSafe(password)){
-            userRegister(username,password);
+        if(register.isPasswordSafe(password)){
+            register.userRegister(username,password);
             logger.info("User" + username +"registered");
         }else {
             logger.info("User" + username +"registration failed");
@@ -57,48 +59,6 @@ public class RegisterController {
         Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
         Stage stage = (Stage) btnReturn.getScene().getWindow();
         stage.setScene(new Scene(root,600,400));
-    }
-
-    public void userRegister(String username, String password){
-        var url = "jdbc:sqlite:users.db";
-        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
-
-        String sql = "INSERT INTO users(username,password) VALUES (?,?)";
-
-        logger.info("Connecting to Database");
-        try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement ps = conn.prepareStatement(sql)){
-
-            logger.info("Connected to database");
-
-            ps.setString(1, username);
-            ps.setString(2, passwordHash);
-            ps.executeUpdate();
-        }catch(SQLException e){
-            logger.error(e);
-        }
-    }
-
-    private boolean isPasswordSafe(String password){ //https://www.geeksforgeeks.org/how-to-validate-a-password-using-regular-expressions-in-java/
-        String regex = "^(?=.*[0-9])"
-                + "(?=.*[a-z])(?=.*[A-Z])"
-                + "(?=.*[@#$%^&+=])"
-                + "(?=\\S+$).{8,20}$";
-
-        Pattern p = Pattern.compile(regex);
-
-        if (password == null) {
-            logger.warn("Registration failed");
-            return false;
-        }
-        Matcher m = p.matcher(password);
-
-        if(!m.matches()){
-            logger.warn("Registration failed");
-            showAlert(Alert.AlertType.ERROR, "Password does not meet minimum security requirements");
-        }
-
-        return m.matches();
     }
 
 }
