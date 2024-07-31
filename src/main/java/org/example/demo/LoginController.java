@@ -5,49 +5,41 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.Objects;
 
+import static org.example.demo.DisplayAlert.showAlert;
+
 public class LoginController {
 
-//    @FXML
-//    private Button btnRegister;
-//
-//    @FXML
-//    private Button btnUser;
+    private static final Logger logger = LogManager.getLogger(LoginController.class);
 
+   @FXML
+    private Button btnRegister;
     @FXML
     private TextField tfPass;
 
     @FXML
     private TextField tfUser;
 
-    public boolean userLogin(String username, String password) {
-
-        var url = "jdbc:sqlite:users.db";
-        var sql = "SELECT * FROM users WHERE username = ? AND password = ?";
-
-        try(Connection conn = DriverManager.getConnection(url);
-            PreparedStatement ps = conn.prepareStatement(sql)){
-
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-        }catch(SQLException e){
-            System.out.println("Login Error");}
-        return false;
-    }
+    Login login = new Login();
 
     @FXML
     void userLoginAction(ActionEvent event) throws IOException {
         String username = tfUser.getText();
         String password = tfPass.getText();
-        if(userLogin(username, password)) {
+
+        logger.info("Logging in user {}", username);
+        if(login.userLogin(username, password)) {
 
             Stage stage = (Stage) tfUser.getScene().getWindow();
             Parent root;
@@ -58,17 +50,17 @@ public class LoginController {
                 root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("user.fxml")));
             }
             stage.setScene(new Scene(root,600,400));
-            System.out.println("Login Successful");
+            logger.info("Logged in user {}", username);
         } else {
-            System.out.println("Login Failed");
+            showAlert(Alert.AlertType.ERROR,"Login Failed");
+            logger.info("Log in failed for user {}", username);
         }
     }
 
     @FXML
-    void userRegisterAction(ActionEvent event) {
-
+    void userRegisterAction(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(getClass().getResource("register.fxml"));
+        Stage stage = (Stage) btnRegister.getScene().getWindow();
+        stage.setScene(new Scene(root,600,400));
     }
-
-
-
 }
